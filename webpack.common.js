@@ -27,7 +27,7 @@ module.exports = {
         noInfo: false
     },
     entry: {
-        storage: './src/index.ts',
+        index: './src/index.ts',
         //styles: './src/styles.ts',
     },
     module: {
