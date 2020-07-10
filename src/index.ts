@@ -20,7 +20,6 @@ export interface IBpdStorage {
     clear(): void
     get(): Storage;
     throwValidationErrors(flag: boolean): void;
-    // onChange(callback: any);
 }
 
 export class BpdStorage implements IBpdStorage {

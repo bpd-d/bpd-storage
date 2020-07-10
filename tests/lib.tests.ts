@@ -142,4 +142,39 @@ describe("Tests checking library", function () {
         expect(out).toBeFalse();
     })
 
+    it("Tests checking [length] - returns proper number of storage", function () {
+        let length: number = -1;
+        let hasFailed = false;
+        try {
+            storage.setBoolean("A", "XXX")
+            storage.setBoolean("B", "True")
+            length = storage.length();
+        } catch (e) {
+            console.error(e);
+            hasFailed = true;
+        }
+        expect(hasFailed).toBeFalse();
+        expect(length).toEqual(2);
+    })
+
+    it("Tests checking [clear] - clears storage", function () {
+        let hasFailed = false;
+        let len1: number = -1;
+        let len2: number = -1;
+        try {
+
+            storage.setBoolean("A", "XXX")
+            storage.setBoolean("B", "True")
+            len1 = storage.length();
+            storage.clear();
+            len2 = storage.length();
+        } catch (e) {
+            console.error(e);
+            hasFailed = true;
+        }
+        expect(hasFailed).toBeFalse();
+        expect(len1).toEqual(2);
+        expect(len2).toEqual(0);
+    })
+
 })
