@@ -1,4 +1,3 @@
-export const test = "Test";
 export type BpdStorageItemType = 'string' | 'boolean' | 'number' | 'object' | 'array'
 export type BpdStorageType = 'local' | 'session';
 
@@ -35,6 +34,7 @@ export class BpdStorage implements IBpdStorage {
     get(): Storage {
         return this.#handler.get();
     }
+
     removeItem(key: string): void {
         this.#handler.remove(key);
     }
@@ -46,6 +46,7 @@ export class BpdStorage implements IBpdStorage {
     isAccessible(): boolean {
         return this.#handler.testStorage();
     }
+
     length(): number {
         return this.#handler.count();
     }
@@ -53,9 +54,11 @@ export class BpdStorage implements IBpdStorage {
     getItem(key: string): string {
         return this.#handler.getString(key);
     }
+
     getNumber(key: string): number {
         return this.#handler.getNumber(key);
     }
+
     getBoolean(key: string): boolean {
         return this.#handler.getBoolean(key);
     }
@@ -63,24 +66,31 @@ export class BpdStorage implements IBpdStorage {
     getAny(key: string): any {
         return this.#handler.getAny(key);
     }
+
     getArray(key: string): string[] {
         return this.#handler.getArray(key);
     }
+
     has(key: string): boolean {
         return this.#handler.has(key);
     }
+
     setItem(key: string, value: any): void {
         this.#handler.set(key, value, 'string');
     }
+
     setNumber(key: string, value: any): void {
         this.#handler.set(key, value, 'number');
     }
+
     setBoolean(key: string, value: any): void {
         this.#handler.set(key, value, 'boolean');
     }
+
     setAny(key: string, value: any): void {
         this.#handler.set(key, value, 'object');
     }
+
     setArray(key: string, value: any): void {
         this.#handler.set(key, value, 'array');
     }
