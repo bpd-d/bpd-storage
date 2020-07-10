@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("bpd-storage", [], factory);
+	else if(typeof exports === 'object')
+		exports["bpd-storage"] = factory();
+	else
+		root["bpd-storage"] = factory();
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -214,7 +224,6 @@ class StorageHandler {
             return;
         }
         let val = null;
-        console.log("type " + type);
         switch (type) {
             case 'string':
             case 'number':
@@ -326,4 +335,5 @@ class BpdStorageUnavailable extends BpdError {
 
 /***/ })
 /******/ ]);
+});
 //# sourceMappingURL=index.js.map

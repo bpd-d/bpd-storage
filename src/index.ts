@@ -148,7 +148,6 @@ class StorageHandler {
             return;
         }
         let val = null
-        console.log("type " + type)
         switch (type) {
             case 'string':
             case 'number':
