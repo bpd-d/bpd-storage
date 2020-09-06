@@ -178,3 +178,48 @@ describe("Tests checking library", function () {
     })
 
 })
+
+
+describe("Tests checking library with prefixed name", function () {
+    let storage: BpdStorage;
+    beforeAll(() => {
+        storage = new BpdStorage('local', "TEST");
+        storage.throwValidationErrors(true);
+    })
+    afterEach(() => {
+        storage.clear();
+    })
+
+    it("Tests checking [setAny/getAny] - normal case", function () {
+        let obj = { a: "1", b: "2" };
+        let out: any = null;
+        let hasFailed = false;
+        try {
+            storage.setAny("A", obj)
+            out = storage.getAny('A')
+        } catch (e) {
+            console.error(e)
+            hasFailed = true;
+        }
+        expect(hasFailed).toBeFalse();
+        expect(out.a).toEqual(obj.a);
+        expect(out.b).toEqual(obj.b);
+    })
+
+
+    it("Tests checking [setAny/getAny] - empty key", function () {
+        let obj = { a: "1", b: "2" };
+        let out: any = null;
+        let hasFailed = false;
+        try {
+            storage.setAny("A", obj)
+            out = storage.getAny('')
+        } catch (e) {
+            console.error(e)
+            hasFailed = true;
+        }
+        expect(hasFailed).toBeTrue();
+        // expect(out.a).toEqual(obj.a);
+        // expect(out.b).toEqual(obj.b);
+    })
+})

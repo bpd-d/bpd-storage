@@ -11,7 +11,7 @@ const isProd = function () {
 };
 module.exports = {
     mode: isProd ? 'production' : 'development',
-    devtool: 'source-map',
+    //devtool: 'source-map',
     optimization: {
         runtimeChunk: false,
         // minimize: true,
@@ -70,9 +70,5 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(),
-        // new MiniCssExtractPlugin({
-        //     filename: 'cui-light.[name].css',
-        //     chunkFilename: 'cui-light.[name].[id].css',
-        // })
     ]
 };

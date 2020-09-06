@@ -23,8 +23,10 @@ export interface IBpdStorage {
 
 export class BpdStorage implements IBpdStorage {
     #handler: StorageHandler;
-    constructor(type: BpdStorageType) {
+    #name: string;
+    constructor(type: BpdStorageType, name?: string) {
         this.#handler = new StorageHandler(type);
+        this.#name = this.isString(name) ? name : "";
     }
 
     throwValidationErrors(flag: boolean): void {
@@ -36,7 +38,7 @@ export class BpdStorage implements IBpdStorage {
     }
 
     removeItem(key: string): void {
-        this.#handler.remove(key);
+        this.#handler.remove(this.getKey(key));
     }
 
     clear(): void {
@@ -52,47 +54,57 @@ export class BpdStorage implements IBpdStorage {
     }
 
     getItem(key: string): string {
-        return this.#handler.getString(key);
+        return this.#handler.getString(this.getKey(key));
     }
 
     getNumber(key: string): number {
-        return this.#handler.getNumber(key);
+        return this.#handler.getNumber(this.getKey(key));
     }
 
     getBoolean(key: string): boolean {
-        return this.#handler.getBoolean(key);
+        return this.#handler.getBoolean(this.getKey(key));
     }
 
     getAny(key: string): any {
-        return this.#handler.getAny(key);
+        return this.#handler.getAny(this.getKey(key));
     }
 
     getArray(key: string): string[] {
-        return this.#handler.getArray(key);
+        return this.#handler.getArray(this.getKey(key));
     }
 
     has(key: string): boolean {
-        return this.#handler.has(key);
+        return this.#handler.has(this.getKey(key));
     }
 
     setItem(key: string, value: any): void {
-        this.#handler.set(key, value, 'string');
+        this.#handler.set(this.getKey(key), value, 'string');
     }
 
     setNumber(key: string, value: any): void {
-        this.#handler.set(key, value, 'number');
+        this.#handler.set(this.getKey(key), value, 'number');
     }
 
     setBoolean(key: string, value: any): void {
-        this.#handler.set(key, value, 'boolean');
+        this.#handler.set(this.getKey(key), value, 'boolean');
     }
 
     setAny(key: string, value: any): void {
-        this.#handler.set(key, value, 'object');
+        this.#handler.set(this.getKey(key), value, 'object');
     }
 
     setArray(key: string, value: any): void {
-        this.#handler.set(key, value, 'array');
+        this.#handler.set(this.getKey(key), value, 'array');
+    }
+
+    private getKey(key: string) {
+        if (this.isString(key))
+            return this.#name + "_" + key;
+        return key;
+    }
+
+    private isString(val: string): boolean {
+        return typeof val === 'string' && val.length > 0;
     }
 }
 
