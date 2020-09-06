@@ -118,11 +118,13 @@ var __classPrivateFieldGet = (undefined && undefined.__classPrivateFieldGet) || 
     }
     return privateMap.get(receiver);
 };
-var _handler, _storage, _type, _throwValidation;
+var _handler, _name, _storage, _type, _throwValidation;
 class BpdStorage {
-    constructor(type) {
+    constructor(type, name) {
         _handler.set(this, void 0);
+        _name.set(this, void 0);
         __classPrivateFieldSet(this, _handler, new StorageHandler(type));
+        __classPrivateFieldSet(this, _name, this.isString(name) ? name : "");
     }
     throwValidationErrors(flag) {
         __classPrivateFieldGet(this, _handler).setThrowValidation(flag);
@@ -131,7 +133,7 @@ class BpdStorage {
         return __classPrivateFieldGet(this, _handler).get();
     }
     removeItem(key) {
-        __classPrivateFieldGet(this, _handler).remove(key);
+        __classPrivateFieldGet(this, _handler).remove(this.getKey(key));
     }
     clear() {
         __classPrivateFieldGet(this, _handler).clear();
@@ -143,40 +145,48 @@ class BpdStorage {
         return __classPrivateFieldGet(this, _handler).count();
     }
     getItem(key) {
-        return __classPrivateFieldGet(this, _handler).getString(key);
+        return __classPrivateFieldGet(this, _handler).getString(this.getKey(key));
     }
     getNumber(key) {
-        return __classPrivateFieldGet(this, _handler).getNumber(key);
+        return __classPrivateFieldGet(this, _handler).getNumber(this.getKey(key));
     }
     getBoolean(key) {
-        return __classPrivateFieldGet(this, _handler).getBoolean(key);
+        return __classPrivateFieldGet(this, _handler).getBoolean(this.getKey(key));
     }
     getAny(key) {
-        return __classPrivateFieldGet(this, _handler).getAny(key);
+        return __classPrivateFieldGet(this, _handler).getAny(this.getKey(key));
     }
     getArray(key) {
-        return __classPrivateFieldGet(this, _handler).getArray(key);
+        return __classPrivateFieldGet(this, _handler).getArray(this.getKey(key));
     }
     has(key) {
-        return __classPrivateFieldGet(this, _handler).has(key);
+        return __classPrivateFieldGet(this, _handler).has(this.getKey(key));
     }
     setItem(key, value) {
-        __classPrivateFieldGet(this, _handler).set(key, value, 'string');
+        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'string');
     }
     setNumber(key, value) {
-        __classPrivateFieldGet(this, _handler).set(key, value, 'number');
+        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'number');
     }
     setBoolean(key, value) {
-        __classPrivateFieldGet(this, _handler).set(key, value, 'boolean');
+        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'boolean');
     }
     setAny(key, value) {
-        __classPrivateFieldGet(this, _handler).set(key, value, 'object');
+        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'object');
     }
     setArray(key, value) {
-        __classPrivateFieldGet(this, _handler).set(key, value, 'array');
+        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'array');
+    }
+    getKey(key) {
+        if (this.isString(key))
+            return __classPrivateFieldGet(this, _name) + "_" + key;
+        return key;
+    }
+    isString(val) {
+        return typeof val === 'string' && val.length > 0;
     }
 }
-_handler = new WeakMap();
+_handler = new WeakMap(), _name = new WeakMap();
 class StorageHandler {
     constructor(type, throwValidation) {
         _storage.set(this, void 0);

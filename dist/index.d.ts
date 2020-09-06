@@ -21,7 +21,7 @@ export interface IBpdStorage {
 }
 export declare class BpdStorage implements IBpdStorage {
     #private;
-    constructor(type: BpdStorageType);
+    constructor(type: BpdStorageType, name?: string);
     throwValidationErrors(flag: boolean): void;
     get(): Storage;
     removeItem(key: string): void;
@@ -39,6 +39,8 @@ export declare class BpdStorage implements IBpdStorage {
     setBoolean(key: string, value: any): void;
     setAny(key: string, value: any): void;
     setArray(key: string, value: any): void;
+    private getKey;
+    private isString;
 }
 declare class BpdError extends Error {
     constructor(name: string, message?: string);

@@ -1,6 +1,6 @@
 {
   "name": "bpd-storage",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Simple storage api wrapper",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
