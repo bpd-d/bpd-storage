@@ -1,6 +1,6 @@
 'use strict'
 var path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 //const TerserPlugin = require('terser-webpack-plugin');
 const NODE_ENV = process.env.NODE_ENV;
 const setPath = function (folderName) {
@@ -14,10 +14,6 @@ module.exports = {
     //devtool: 'source-map',
     optimization: {
         runtimeChunk: false,
-        // minimize: true,
-        // minimizer: [ new TerserPlugin({
-        //     sourceMap: true,
-        // })]
     },
     resolveLoader: {
         modules: [setPath('node_modules')]
@@ -37,25 +33,7 @@ module.exports = {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
-            // {
-            //     test: /\.scss$/,
-            //     use: [
-            //         {
-            //             loader: MiniCssExtractPlugin.loader,
-            //             options: {
-            //                 hmr: !isProd(),
-            //             }
-            //         },
-            //         {
-            //             loader: "css-loader", // translates CSS into CommonJS
-            //             options: { url: false, sourceMap: true }
-            //         },
-            //         {
-            //             loader: "sass-loader", // compiles Sass to CSS
-            //             options: { sourceMap: true }
-            //         }
-            //     ]
-            // }
+
         ]
     },
     resolve: {
@@ -67,8 +45,5 @@ module.exports = {
         libraryTarget: 'umd',
         library: "bpd-storage",
         umdNamedDefine: true
-    },
-    plugins: [
-        new CleanWebpackPlugin(),
-    ]
+    }
 };

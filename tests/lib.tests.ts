@@ -62,9 +62,9 @@ describe("Tests checking library", function () {
     it("Tests checking [removeItem] - normal case", function () {
         let hasRemoved = false;
         storage.setItem("X", "X")
-        let hasAdded = storage.getItem('X') !== null;
+        let hasAdded = storage.getItem('X') !== undefined;
         storage.removeItem("X")
-        hasRemoved = storage.getItem('X') === null;
+        hasRemoved = storage.getItem('X') === undefined;
         expect(hasAdded).toBeTrue();
         expect(hasRemoved).toBeTrue();
     })

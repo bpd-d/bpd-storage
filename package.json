@@ -1,6 +1,6 @@
 {
   "name": "bpd-storage",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Simple storage api wrapper",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -8,9 +8,11 @@
     "/dist"
   ],
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.development.js",
     "build": "webpack --config webpack.production.js",
-    "test": "karma start karma.config.js"
+    "build:minify": "webpack --config webpack.build.minify.js",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "test": "karma start karma.config.js",
+    "prod": "npm run build && npm run build:esm && npm run build:minify"
   },
   "repository": {
     "type": "git",
@@ -27,14 +29,15 @@
   },
   "homepage": "https://github.com/bpd-d/bpd-storage#readme",
   "devDependencies": {
-    "@types/jasmine": "^3.5.11",
+    "@types/jasmine": "^3.5.14",
     "clean-webpack-plugin": "^3.0.0",
-    "jasmine": "^3.5.0",
-    "karma-typescript": "^5.0.3",
-    "serialize-javascript": ">=2.1.1",
+    "jasmine": "^3.6.1",
+    "karma-typescript": "^5.2.0",
+    "serialize-javascript": "^5.0.1",
     "ts-loader": "^6.2.2",
-    "typescript": "^3.9.5",
-    "webpack": "^4.43.0",
+    "typescript": "^3.9.7",
+    "typescript-transform-paths": "^2.0.1",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-karma-jasmine": "^4.0.0",

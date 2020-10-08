@@ -2,11 +2,11 @@ export type BpdStorageItemType = 'string' | 'boolean' | 'number' | 'object' | 'a
 export type BpdStorageType = 'local' | 'session';
 
 export interface IBpdStorage {
-    getItem(key: string): string;
-    getNumber(key: string): number;
+    getItem(key: string): string | undefined;
+    getNumber(key: string): number | undefined;
     getBoolean(key: string): boolean;
-    getAny(key: string): any;
-    getArray(key: string): string[];
+    getAny(key: string): any | undefined;
+    getArray(key: string): string[] | undefined;
     has(key: string): boolean;
     setItem(key: string, value: any): void;
     setNumber(key: string, value: any): void;
@@ -17,23 +17,23 @@ export interface IBpdStorage {
     length(): number;
     removeItem(key: string): void;
     clear(): void
-    get(): Storage;
+    get(): Storage | undefined;
     throwValidationErrors(flag: boolean): void;
 }
 
 export class BpdStorage implements IBpdStorage {
     #handler: StorageHandler;
     #name: string;
-    constructor(type: BpdStorageType, name?: string) {
+    constructor(type: BpdStorageType, name: string = "") {
         this.#handler = new StorageHandler(type);
-        this.#name = this.isString(name) ? name : "";
+        this.#name = name;
     }
 
     throwValidationErrors(flag: boolean): void {
         this.#handler.setThrowValidation(flag);
     }
 
-    get(): Storage {
+    get(): Storage | undefined {
         return this.#handler.get();
     }
 
@@ -53,11 +53,11 @@ export class BpdStorage implements IBpdStorage {
         return this.#handler.count();
     }
 
-    getItem(key: string): string {
+    getItem(key: string): string | undefined {
         return this.#handler.getString(this.getKey(key));
     }
 
-    getNumber(key: string): number {
+    getNumber(key: string): number | undefined {
         return this.#handler.getNumber(this.getKey(key));
     }
 
@@ -65,11 +65,11 @@ export class BpdStorage implements IBpdStorage {
         return this.#handler.getBoolean(this.getKey(key));
     }
 
-    getAny(key: string): any {
+    getAny(key: string): any | undefined {
         return this.#handler.getAny(this.getKey(key));
     }
 
-    getArray(key: string): string[] {
+    getArray(key: string): string[] | undefined {
         return this.#handler.getArray(this.getKey(key));
     }
 
@@ -109,7 +109,7 @@ export class BpdStorage implements IBpdStorage {
 }
 
 class StorageHandler {
-    #storage: Storage;
+    #storage: Storage | undefined;
     #type: BpdStorageType;
     #throwValidation: boolean
     constructor(type: BpdStorageType, throwValidation?: boolean) {
@@ -128,31 +128,34 @@ class StorageHandler {
         this.#throwValidation = flag;
     }
 
-    getStorage(type: BpdStorageType): Storage {
+    getStorage(type: BpdStorageType): Storage | undefined {
         switch (type) {
             case 'local':
                 return window.localStorage;
             case 'session':
                 return window.sessionStorage;
             default:
-                return null;
+                return undefined;
         }
     }
 
     testStorage(): boolean {
         try {
-            var x = '__storage_test__';
-            this.#storage.setItem(x, x);
-            this.#storage.removeItem(x);
-            return true;
+            if (this.#storage) {
+                var x = '__storage_test__';
+                this.#storage.setItem(x, x);
+                this.#storage.removeItem(x);
+                return true;
+            }
         }
         catch (e) {
             return false;
         }
+        return false;
     }
 
     count(): number {
-        return this.#storage.length;
+        return this.#storage ? this.#storage.length : -1;
     }
 
     set(key: string, value: any, type: BpdStorageItemType): void {
@@ -176,67 +179,75 @@ class StorageHandler {
                 val = value.join(";");
                 break;
         }
-        if (val)
+        if (val && this.#storage)
             this.#storage.setItem(key, val);
         else {
             throw new BpdUnknownStorageItemType("Unknown item type or empty value was provided")
         }
     }
 
-    getString(key: string): string {
-        if (!this.validateKey(key)) {
-            return null;
+    getString(key: string): string | undefined {
+        if (!this.validateKey(key) || !this.#storage) {
+            return undefined;
         }
-        return this.#storage.getItem(key);
+        let item = this.#storage.getItem(key)
+        return item !== null ? item : undefined;
     }
 
-    getNumber(key: string) {
+    getNumber(key: string): number | undefined {
         if (!this.validateKey(key)) {
-            return null;
+            return undefined;
         }
-        return parseInt(this.getString(key));
+        let item = this.getString(key);
+        return item ? parseInt(item) : undefined;
     }
 
-    getAny(key: string): any {
-        console.log("et " + key)
+    getAny(key: string): any | undefined {
         if (!this.validateKey(key)) {
-            return null;
+            return undefined;
         }
 
-        return JSON.parse(this.getString(key));
+        let item = this.getString(key);
+        return item ? JSON.parse(item) : undefined;
     }
 
     getBoolean(key: string): boolean {
         if (!this.validateKey(key)) {
-            return null;
+            return false;
         }
         return this.getString(key) === 'true';
     }
 
-    getArray(key: string): any[] {
+    getArray(key: string): any[] | undefined {
         if (!this.validateKey(key)) {
-            return null;
+            return undefined;
         }
-        return this.getString(key).split(';');
+        let item = this.getString(key);
+        return item ? item.split(';') : undefined;
     }
 
     has(key: string): boolean {
         if (!this.validateKey(key)) {
             return false;
         }
-        return this.#storage.getItem(key) !== null;
+        return this.#storage ? this.#storage.getItem(key) !== null : false;
     }
 
     clear() {
-        this.#storage.clear();
+        if (this.#storage) {
+            this.#storage.clear();
+        }
     }
 
-    get(): Storage {
+    get(): Storage | undefined {
         return this.#storage;
     }
 
     remove(key: string) {
-        this.#storage.removeItem(key);
+        if (this.#storage) {
+            this.#storage.removeItem(key);
+        }
+
     }
 
     validateKey(key: string): boolean {

@@ -1,9 +1,26 @@
-# bpd-storage
+# Bpd Storage
 Provides a simple wrap on storage in the browser
-To serialize objects it uses JSON.stringify, JSON.parse
-To serialize arrays it joins values (with ;) when serializing and splits during deserialization
-Provides following methods
+To serialize objects it uses JSON.stringify, JSON.parse.
+To serialize arrays it joins values (with ;) when serializing and splits during deserialization.
 
+## Initialization
+
+Create instance of BpdStorage
+```javascript
+import { BpdStorage } from "./node_modules/bpd-storage/dist/esm/index";
+
+let storage = new BpdStorage(type, name?)
+```
+
+where **type** is:
+* local - creates local storage instance 
+* session - creates session storage instance
+
+and **name** is a an optional storage name.
+
+## Methods
+
+Provides following methods
 // Instead of returning null or false object will throw validation errors when argument are incorrect/empty
 ```javascript
 throwValidationErrors(flag: boolean): void;
