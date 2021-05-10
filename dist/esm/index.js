@@ -1,94 +1,73 @@
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, privateMap, value) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to set private field on non-instance");
-    }
-    privateMap.set(receiver, value);
-    return value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, privateMap) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to get private field on non-instance");
-    }
-    return privateMap.get(receiver);
-};
-var _handler, _name, _storage, _type, _throwValidation;
 export class BpdStorage {
     constructor(type, name = "") {
-        _handler.set(this, void 0);
-        _name.set(this, void 0);
-        __classPrivateFieldSet(this, _handler, new StorageHandler(type));
-        __classPrivateFieldSet(this, _name, name);
+        this._handler = new StorageHandler(type);
+        this._name = name;
     }
     throwValidationErrors(flag) {
-        __classPrivateFieldGet(this, _handler).setThrowValidation(flag);
+        this._handler.setThrowValidation(flag);
     }
     get() {
-        return __classPrivateFieldGet(this, _handler).get();
+        return this._handler.get();
     }
     removeItem(key) {
-        __classPrivateFieldGet(this, _handler).remove(this.getKey(key));
+        this._handler.remove(this.getKey(key));
     }
     clear() {
-        __classPrivateFieldGet(this, _handler).clear();
+        this._handler.clear();
     }
     isAccessible() {
-        return __classPrivateFieldGet(this, _handler).testStorage();
+        return this._handler.testStorage();
     }
     length() {
-        return __classPrivateFieldGet(this, _handler).count();
+        return this._handler.count();
     }
     getItem(key) {
-        return __classPrivateFieldGet(this, _handler).getString(this.getKey(key));
+        return this._handler.getString(this.getKey(key));
     }
     getNumber(key) {
-        return __classPrivateFieldGet(this, _handler).getNumber(this.getKey(key));
+        return this._handler.getNumber(this.getKey(key));
     }
     getBoolean(key) {
-        return __classPrivateFieldGet(this, _handler).getBoolean(this.getKey(key));
+        return this._handler.getBoolean(this.getKey(key));
     }
     getAny(key) {
-        return __classPrivateFieldGet(this, _handler).getAny(this.getKey(key));
+        return this._handler.getAny(this.getKey(key));
     }
     getArray(key) {
-        return __classPrivateFieldGet(this, _handler).getArray(this.getKey(key));
+        return this._handler.getArray(this.getKey(key));
     }
     has(key) {
-        return __classPrivateFieldGet(this, _handler).has(this.getKey(key));
+        return this._handler.has(this.getKey(key));
     }
     setItem(key, value) {
-        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'string');
+        this._handler.set(this.getKey(key), value, 'string');
     }
     setNumber(key, value) {
-        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'number');
+        this._handler.set(this.getKey(key), value, 'number');
     }
     setBoolean(key, value) {
-        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'boolean');
+        this._handler.set(this.getKey(key), value, 'boolean');
     }
     setAny(key, value) {
-        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'object');
+        this._handler.set(this.getKey(key), value, 'object');
     }
     setArray(key, value) {
-        __classPrivateFieldGet(this, _handler).set(this.getKey(key), value, 'array');
+        this._handler.set(this.getKey(key), value, 'array');
     }
     getKey(key) {
         if (this.isString(key))
-            return __classPrivateFieldGet(this, _name) + "_" + key;
+            return this._name + "_" + key;
         return key;
     }
     isString(val) {
         return typeof val === 'string' && val.length > 0;
     }
 }
-_handler = new WeakMap(), _name = new WeakMap();
 class StorageHandler {
     constructor(type, throwValidation) {
-        _storage.set(this, void 0);
-        _type.set(this, void 0);
-        _throwValidation.set(this, void 0);
-        __classPrivateFieldSet(this, _throwValidation, throwValidation !== null && throwValidation !== void 0 ? throwValidation : false);
-        __classPrivateFieldSet(this, _type, type);
-        __classPrivateFieldSet(this, _storage, this.getStorage(type));
-        if (!__classPrivateFieldGet(this, _storage)) {
+        this._throwValidation = throwValidation !== null && throwValidation !== void 0 ? throwValidation : false;
+        this._storage = this.getStorage(type);
+        if (!this._storage) {
             throw new BpdUnknownStorageOption(`Unknown storage: [${type}]`);
         }
         if (!this.testStorage()) {
@@ -96,7 +75,7 @@ class StorageHandler {
         }
     }
     setThrowValidation(flag) {
-        __classPrivateFieldSet(this, _throwValidation, flag);
+        this._throwValidation = flag;
     }
     getStorage(type) {
         switch (type) {
@@ -110,10 +89,10 @@ class StorageHandler {
     }
     testStorage() {
         try {
-            if (__classPrivateFieldGet(this, _storage)) {
+            if (this._storage) {
                 var x = '__storage_test__';
-                __classPrivateFieldGet(this, _storage).setItem(x, x);
-                __classPrivateFieldGet(this, _storage).removeItem(x);
+                this._storage.setItem(x, x);
+                this._storage.removeItem(x);
                 return true;
             }
         }
@@ -123,7 +102,7 @@ class StorageHandler {
         return false;
     }
     count() {
-        return __classPrivateFieldGet(this, _storage) ? __classPrivateFieldGet(this, _storage).length : -1;
+        return this._storage ? this._storage.length : -1;
     }
     set(key, value, type) {
         if (!this.validateKey(key)) {
@@ -146,17 +125,17 @@ class StorageHandler {
                 val = value.join(";");
                 break;
         }
-        if (val && __classPrivateFieldGet(this, _storage))
-            __classPrivateFieldGet(this, _storage).setItem(key, val);
+        if (val && this._storage)
+            this._storage.setItem(key, val);
         else {
             throw new BpdUnknownStorageItemType("Unknown item type or empty value was provided");
         }
     }
     getString(key) {
-        if (!this.validateKey(key) || !__classPrivateFieldGet(this, _storage)) {
+        if (!this.validateKey(key) || !this._storage) {
             return undefined;
         }
-        let item = __classPrivateFieldGet(this, _storage).getItem(key);
+        let item = this._storage.getItem(key);
         return item !== null ? item : undefined;
     }
     getNumber(key) {
@@ -190,25 +169,25 @@ class StorageHandler {
         if (!this.validateKey(key)) {
             return false;
         }
-        return __classPrivateFieldGet(this, _storage) ? __classPrivateFieldGet(this, _storage).getItem(key) !== null : false;
+        return this._storage ? this._storage.getItem(key) !== null : false;
     }
     clear() {
-        if (__classPrivateFieldGet(this, _storage)) {
-            __classPrivateFieldGet(this, _storage).clear();
+        if (this._storage) {
+            this._storage.clear();
         }
     }
     get() {
-        return __classPrivateFieldGet(this, _storage);
+        return this._storage;
     }
     remove(key) {
-        if (__classPrivateFieldGet(this, _storage)) {
-            __classPrivateFieldGet(this, _storage).removeItem(key);
+        if (this._storage) {
+            this._storage.removeItem(key);
         }
     }
     validateKey(key) {
         let is = key !== null && key.length > 0;
         if (!is) {
-            if (__classPrivateFieldGet(this, _throwValidation)) {
+            if (this._throwValidation) {
                 throw new BpdValidationError("property key was empty");
             }
             return false;
@@ -216,7 +195,6 @@ class StorageHandler {
         return true;
     }
 }
-_storage = new WeakMap(), _type = new WeakMap(), _throwValidation = new WeakMap();
 class BpdError extends Error {
     constructor(name, message) {
         super(message);

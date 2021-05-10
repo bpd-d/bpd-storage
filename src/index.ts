@@ -22,84 +22,84 @@ export interface IBpdStorage {
 }
 
 export class BpdStorage implements IBpdStorage {
-    #handler: StorageHandler;
-    #name: string;
+    private _handler: StorageHandler;
+    private _name: string;
     constructor(type: BpdStorageType, name: string = "") {
-        this.#handler = new StorageHandler(type);
-        this.#name = name;
+        this._handler = new StorageHandler(type);
+        this._name = name;
     }
 
     throwValidationErrors(flag: boolean): void {
-        this.#handler.setThrowValidation(flag);
+        this._handler.setThrowValidation(flag);
     }
 
     get(): Storage | undefined {
-        return this.#handler.get();
+        return this._handler.get();
     }
 
     removeItem(key: string): void {
-        this.#handler.remove(this.getKey(key));
+        this._handler.remove(this.getKey(key));
     }
 
     clear(): void {
-        this.#handler.clear();
+        this._handler.clear();
     }
 
     isAccessible(): boolean {
-        return this.#handler.testStorage();
+        return this._handler.testStorage();
     }
 
     length(): number {
-        return this.#handler.count();
+        return this._handler.count();
     }
 
     getItem(key: string): string | undefined {
-        return this.#handler.getString(this.getKey(key));
+        return this._handler.getString(this.getKey(key));
     }
 
     getNumber(key: string): number | undefined {
-        return this.#handler.getNumber(this.getKey(key));
+        return this._handler.getNumber(this.getKey(key));
     }
 
     getBoolean(key: string): boolean {
-        return this.#handler.getBoolean(this.getKey(key));
+        return this._handler.getBoolean(this.getKey(key));
     }
 
     getAny(key: string): any | undefined {
-        return this.#handler.getAny(this.getKey(key));
+        return this._handler.getAny(this.getKey(key));
     }
 
     getArray(key: string): string[] | undefined {
-        return this.#handler.getArray(this.getKey(key));
+        return this._handler.getArray(this.getKey(key));
     }
 
     has(key: string): boolean {
-        return this.#handler.has(this.getKey(key));
+        return this._handler.has(this.getKey(key));
     }
 
     setItem(key: string, value: any): void {
-        this.#handler.set(this.getKey(key), value, 'string');
+        this._handler.set(this.getKey(key), value, 'string');
     }
 
     setNumber(key: string, value: any): void {
-        this.#handler.set(this.getKey(key), value, 'number');
+        this._handler.set(this.getKey(key), value, 'number');
     }
 
     setBoolean(key: string, value: any): void {
-        this.#handler.set(this.getKey(key), value, 'boolean');
+        this._handler.set(this.getKey(key), value, 'boolean');
     }
 
     setAny(key: string, value: any): void {
-        this.#handler.set(this.getKey(key), value, 'object');
+        this._handler.set(this.getKey(key), value, 'object');
     }
 
     setArray(key: string, value: any): void {
-        this.#handler.set(this.getKey(key), value, 'array');
+        this._handler.set(this.getKey(key), value, 'array');
     }
 
     private getKey(key: string) {
         if (this.isString(key))
-            return this.#name + "_" + key;
+            return this._name + "_" + key;
         return key;
     }
 
@@ -109,14 +109,12 @@ export class BpdStorage implements IBpdStorage {
 }
 
 class StorageHandler {
-    #storage: Storage | undefined;
-    #type: BpdStorageType;
-    #throwValidation: boolean
+    _storage: Storage | undefined;
+    _throwValidation: boolean
     constructor(type: BpdStorageType, throwValidation?: boolean) {
-        this.#throwValidation = throwValidation ?? false;
-        this.#type = type;
-        this.#storage = this.getStorage(type);
-        if (!this.#storage) {
+        this._throwValidation = throwValidation ?? false;
+        this._storage = this.getStorage(type);
+        if (!this._storage) {
             throw new BpdUnknownStorageOption(`Unknown storage: [${type}]`)
         }
         if (!this.testStorage()) {
@@ -125,7 +123,7 @@ class StorageHandler {
     }
 
     setThrowValidation(flag: boolean) {
-        this.#throwValidation = flag;
+        this._throwValidation = flag;
     }
 
     getStorage(type: BpdStorageType): Storage | undefined {
@@ -141,10 +139,10 @@ class StorageHandler {
 
     testStorage(): boolean {
         try {
-            if (this.#storage) {
+            if (this._storage) {
                 var x = '__storage_test__';
-                this.#storage.setItem(x, x);
-                this.#storage.removeItem(x);
+                this._storage.setItem(x, x);
+                this._storage.removeItem(x);
                 return true;
             }
         }
@@ -155,7 +153,7 @@ class StorageHandler {
     }
 
     count(): number {
-        return this.#storage ? this.#storage.length : -1;
+        return this._storage ? this._storage.length : -1;
     }
 
     set(key: string, value: any, type: BpdStorageItemType): void {
@@ -179,18 +177,18 @@ class StorageHandler {
                 val = value.join(";");
                 break;
         }
-        if (val && this.#storage)
-            this.#storage.setItem(key, val);
+        if (val && this._storage)
+            this._storage.setItem(key, val);
         else {
             throw new BpdUnknownStorageItemType("Unknown item type or empty value was provided")
         }
     }
 
     getString(key: string): string | undefined {
-        if (!this.validateKey(key) || !this.#storage) {
+        if (!this.validateKey(key) || !this._storage) {
             return undefined;
         }
-        let item = this.#storage.getItem(key)
+        let item = this._storage.getItem(key)
         return item !== null ? item : undefined;
     }
 
@@ -230,22 +228,22 @@ class StorageHandler {
         if (!this.validateKey(key)) {
             return false;
         }
-        return this.#storage ? this.#storage.getItem(key) !== null : false;
+        return this._storage ? this._storage.getItem(key) !== null : false;
     }
 
     clear() {
-        if (this.#storage) {
-            this.#storage.clear();
+        if (this._storage) {
+            this._storage.clear();
         }
     }
 
     get(): Storage | undefined {
-        return this.#storage;
+        return this._storage;
     }
 
     remove(key: string) {
-        if (this.#storage) {
-            this.#storage.removeItem(key);
+        if (this._storage) {
+            this._storage.removeItem(key);
         }
 
     }
@@ -253,7 +251,7 @@ class StorageHandler {
     validateKey(key: string): boolean {
         let is = key !== null && key.length > 0;
         if (!is) {
-            if (this.#throwValidation) {
+            if (this._throwValidation) {
                 throw new BpdValidationError("property key was empty");
             }
             return false;

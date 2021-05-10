@@ -20,7 +20,8 @@ export interface IBpdStorage {
     throwValidationErrors(flag: boolean): void;
 }
 export declare class BpdStorage implements IBpdStorage {
-    #private;
+    private _handler;
+    private _name;
     constructor(type: BpdStorageType, name?: string);
     throwValidationErrors(flag: boolean): void;
     get(): Storage | undefined;
